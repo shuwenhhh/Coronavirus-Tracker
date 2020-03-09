@@ -62,12 +62,14 @@ public class CoronaVirusDataService {
         for (CSVRecord record : records){
             StatesModel tempState = new StatesModel();
             String country = record.get("Country/Region");
-
-            tempState.setState(record.get("Province/State"));
-            tempState.setLatitude(record.get("Lat"));
-            tempState.setLongitude(record.get("Long"));
+            String state = record.get("Province/State");
+            if (state.length() != 0){
+                tempState.setState(state);
+            }
             tempState.setCountry(country);
             this.countrySet.add(country);
+            tempState.setLatitude(record.get("Lat"));
+            tempState.setLongitude(record.get("Long"));
 
             Map<String,Integer> map = new HashMap<>();
             getStateDailyReport(map,record);
