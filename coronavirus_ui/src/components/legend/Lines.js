@@ -6,7 +6,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Line
+  Line,
+  ResponsiveContainer
 } from "recharts";
 
 const data = [
@@ -28,9 +29,8 @@ const data = [
   {
     name: "Page C",
     uv: 2000,
-    pv: 9800,
+    pv: 10800,
     pu: 2200,
-
     amt: 2290
   },
   {
@@ -65,28 +65,33 @@ const data = [
 ];
 
 function Lines() {
-  const [width, setwidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    setwidth(width);
-  }, [width]);
   return (
-    <LineChart
-      width={width}
-      height={250}
-      data={data}
-      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-    >
-      <XAxis dataKey="name" />
-      <YAxis />
-      <CartesianGrid strokeDasharray="3 3" />
-      <Tooltip />
-      <Legend verticalAlign="top" height={36} />
-      <Line name="pv of pages" type="monotone" dataKey="pv" stroke="#8884d8" />
-      <Line name="uv of pages" type="monotone" dataKey="uv" stroke="#82ca9d" />
-      <Line name="pu of pages" type="monotone" dataKey="pu" stroke="blue" />
-      <Line name="amt of pages" type="monotone" dataKey="amt" stroke="red" />
-    </LineChart>
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart
+        data={data}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <XAxis dataKey="name" />
+        <YAxis />
+        <CartesianGrid strokeDasharray="3 3" />
+        <Tooltip />
+        <Legend verticalAlign="top" height={36} />
+        <Line
+          name="pv of pages"
+          type="monotone"
+          dataKey="pv"
+          stroke="#8884d8"
+        />
+        <Line
+          name="uv of pages"
+          type="monotone"
+          dataKey="uv"
+          stroke="#82ca9d"
+        />
+        <Line name="pu of pages" type="monotone" dataKey="pu" stroke="blue" />
+        <Line name="amt of pages" type="monotone" dataKey="amt" stroke="red" />
+      </LineChart>
+    </ResponsiveContainer>
   );
 }
 

@@ -63,9 +63,10 @@ public class CoronaVirusDataService {
             StatesModel tempState = new StatesModel();
             String country = record.get("Country/Region");
             String state = record.get("Province/State");
-            if (state.length() != 0){
+            if (state.length() != 0)
                 tempState.setState(state);
-            }
+            else
+                tempState.setState("UNDEF");
             tempState.setCountry(country);
             this.countrySet.add(country);
             tempState.setLatitude(record.get("Lat"));
@@ -75,7 +76,7 @@ public class CoronaVirusDataService {
             getStateDailyReport(map,record);
             tempState.setDailyConfirmed(map);
 
-            tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-1)));
+            tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-2)));
             newStates.add(tempState);
 
             totalConfirmed += tempState.getTotalConfirmed();
@@ -90,7 +91,7 @@ public class CoronaVirusDataService {
             Map<String,Integer> map = new HashMap<>();
             getStateDailyReport(map,record);
             newStates.get(index).setDailyRecovered(map);
-            newStates.get(index).setTotalRecovered(Integer.parseInt(record.get(record.size()-1)));
+            newStates.get(index).setTotalRecovered(Integer.parseInt(record.get(record.size()-2)));
             totalRecovered += newStates.get(index++).getTotalRecovered();
         }
         totalCases.put("totalRecoveredCase",totalRecovered);
@@ -103,7 +104,7 @@ public class CoronaVirusDataService {
             Map<String,Integer> map = new HashMap<>();
             getStateDailyReport(map,record);
             newStates.get(index).setDailyDeath(map);
-            newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-1)));
+            newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-2)));
             totalDeath += newStates.get(index++).getTotalDeath();
         }
         totalCases.put("totalDeathCase",totalDeath);
