@@ -2,7 +2,7 @@ package com.jianhui.CoronaVirustracker.models;
 
 import java.util.Map;
 
-public class StatesModel {
+public class StatesModel implements Comparable<StatesModel>{
 
     private String state;
     private String country;
@@ -93,5 +93,10 @@ public class StatesModel {
 
     public void setTotalDeath(int totalDeath) {
         this.totalDeath = totalDeath;
+    }
+
+    @Override
+    public int compareTo(StatesModel o) {
+        return this.getTotalConfirmed() - o.getTotalConfirmed();
     }
 }

@@ -113,6 +113,7 @@ public class CoronaVirusDataService {
 
     private void fetchCountryData(List<StatesModel> newStates, List<CountryModel> newCountries){
         for(String country: this.countrySet){
+            List<StatesModel> list = new LinkedList<>();
             CountryModel newCountry = new CountryModel();
             newCountry.setCountryName(country);
             int countryTotalConfirmed=0;
@@ -123,6 +124,8 @@ public class CoronaVirusDataService {
             List<Map<String,Integer>> deathDailyList = new LinkedList<>();
             for (StatesModel state: newStates){
                 if (state.getCountry().equalsIgnoreCase(country)){
+                    if (!state.getState().equalsIgnoreCase("UNDEF"))
+                        list.add(state);
                     confirmedDailyList.add(state.getDailyConfirmed());
                     recoveredDailyList.add(state.getDailyRecovered());
                     deathDailyList.add(state.getDailyDeath());
@@ -226,10 +229,14 @@ public class CoronaVirusDataService {
     }
 
     public List<StatesModel> getAllStates(){
+        Comparator<StatesModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
+        Collections.sort(allStates,compareByConfirmed);
         return allStates;
     }
 
     public List<CountryModel> getAllCountries() {
+        Comparator<CountryModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
+        Collections.sort(allCountries,compareByConfirmed);
         return allCountries;
     }
 

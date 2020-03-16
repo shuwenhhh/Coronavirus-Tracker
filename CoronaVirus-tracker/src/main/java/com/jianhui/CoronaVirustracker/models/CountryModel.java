@@ -1,13 +1,15 @@
 package com.jianhui.CoronaVirustracker.models;
 
+import java.util.List;
 import java.util.Map;
 
-public class CountryModel {
+public class CountryModel implements Comparable< CountryModel>{
 
     private String countryName;
     private Map<String,Integer> dailyConfirmed;
     private Map<String,Integer> dailyRecovered;
     private Map<String,Integer> dailyDeath;
+    private List<StatesModel> states;
     private int totalConfirmed;
     private int totalRecovered;
     private int totalDeath;
@@ -68,5 +70,18 @@ public class CountryModel {
 
     public void setTotalDeath(int totalDeath) {
         this.totalDeath = totalDeath;
+    }
+
+    public List<StatesModel> getStates() {
+        return states;
+    }
+
+    public void setStates(List<StatesModel> states) {
+        this.states = states;
+    }
+
+    @Override
+    public int compareTo(CountryModel o) {
+        return this.getTotalConfirmed() - o.getTotalConfirmed();
     }
 }
