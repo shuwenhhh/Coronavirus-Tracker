@@ -2,6 +2,7 @@ package com.jianhui.CoronaVirustracker.controller;
 
 import com.jianhui.CoronaVirustracker.models.CountryModel;
 import com.jianhui.CoronaVirustracker.models.StatesModel;
+import com.jianhui.CoronaVirustracker.models.WorldModel;
 import com.jianhui.CoronaVirustracker.services.CoronaVirusDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,9 @@ public class DataController {
         return coronaVirusDataService.getAllCountries();
     }
 
-    @GetMapping("/totalCases")
-    public Map<String,Integer> getTotalCases(){
-        return coronaVirusDataService.getTotalCases();
+    @GetMapping("/world")
+    public WorldModel getWorld(){
+        return coronaVirusDataService.getWorld();
     }
 
     @GetMapping("/state/{name}")

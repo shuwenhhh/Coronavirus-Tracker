@@ -3,6 +3,7 @@ package com.jianhui.CoronaVirustracker.services;
 
 import com.jianhui.CoronaVirustracker.models.CountryModel;
 import com.jianhui.CoronaVirustracker.models.StatesModel;
+import com.jianhui.CoronaVirustracker.models.WorldModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +29,7 @@ public class CoronaVirusDataService {
     private List<StatesModel> allStates = new ArrayList<>();
     private List<CountryModel> allCountries = new ArrayList<>();
     private Set<String> countrySet = new HashSet<>();
-    private Map<String,Integer> totalCases = new HashMap<>();
+    private WorldModel worldModel = new WorldModel();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy");
 
 
@@ -54,7 +55,7 @@ public class CoronaVirusDataService {
         fetchCountryData(newStates, newCountries);
         allStates = newStates;
         allCountries = newCountries;
-
+        getWorldDailyReport();
     }
 
     private void fetchConfirmedData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException {
@@ -81,7 +82,7 @@ public class CoronaVirusDataService {
 
             totalConfirmed += tempState.getTotalConfirmed();
         }
-        totalCases.put("totalConfirmedCase",totalConfirmed);
+        worldModel.setTotalConfirmed(totalConfirmed);
     }
 
     private void fetchRecoveredData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{
@@ -94,7 +95,7 @@ public class CoronaVirusDataService {
             newStates.get(index).setTotalRecovered(Integer.parseInt(record.get(record.size()-2)));
             totalRecovered += newStates.get(index++).getTotalRecovered();
         }
-        totalCases.put("totalRecoveredCase",totalRecovered);
+        worldModel.setTotalRecovered(totalRecovered);
     }
 
     private void fetchDeathData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{
@@ -107,7 +108,7 @@ public class CoronaVirusDataService {
             newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-2)));
             totalDeath += newStates.get(index++).getTotalDeath();
         }
-        totalCases.put("totalDeathCase",totalDeath);
+        worldModel.setTotalDeath(totalDeath);
     }
 
     private void fetchCountryData(List<StatesModel> newStates, List<CountryModel> newCountries){
@@ -148,6 +149,37 @@ public class CoronaVirusDataService {
 
             newCountries.add(newCountry);
         }
+    }
+
+    private void getWorldDailyReport() throws ParseException {
+        String date = "1/22/20";
+        String today = dateFormat.format(new Date());
+        Map<String, Integer> confirmedDaily = new HashMap<>();
+        Map<String, Integer> recoveredDaily = new HashMap<>();
+        Map<String, Integer> deathDaily = new HashMap<>();
+        boolean isEnd = false;
+        while (!date.equals(today)) {
+            int confirmed=0, recovered=0,death=0;
+            for (CountryModel country : allCountries) {
+                if (country.getDailyConfirmed().get(date) == null){
+                    isEnd = true;
+                    break;
+                }
+                confirmed += country.getDailyConfirmed().get(date);
+                recovered += country.getDailyRecovered().get(date);
+                death += country.getDailyDeath().get(date);
+
+            }
+            if (isEnd)
+                break;
+            confirmedDaily.put(date, confirmed);
+            recoveredDaily.put(date, recovered);
+            deathDaily.put(date, death);
+            date = plusOneDay(date);
+        }
+        worldModel.setDailyConfirmed(confirmedDaily);
+        worldModel.setDailyDeath(deathDaily);
+        worldModel.setDailyRecovered(recoveredDaily);
     }
 
     private void getCountryDailyReport (Map<String,Integer> map, List<Map<String,Integer>> mapList){
@@ -201,7 +233,8 @@ public class CoronaVirusDataService {
         return allCountries;
     }
 
-    public Map<String,Integer> getTotalCases(){
-        return totalCases;
+    public WorldModel getWorld(){
+        return worldModel;
     }
+
 }
