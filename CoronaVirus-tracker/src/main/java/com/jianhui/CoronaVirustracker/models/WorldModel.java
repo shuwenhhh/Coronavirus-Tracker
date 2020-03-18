@@ -1,5 +1,7 @@
 package com.jianhui.CoronaVirustracker.models;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class WorldModel {
@@ -10,6 +12,8 @@ public class WorldModel {
     private Map<String,Integer> dailyConfirmed;
     private Map<String,Integer> dailyRecovered;
     private Map<String,Integer> dailyDeath;
+    private List<Map<String,String>> dailyList;
+
 
     public int getTotalConfirmed() {
         return totalConfirmed;
@@ -57,5 +61,13 @@ public class WorldModel {
 
     public void setDailyDeath(Map<String, Integer> dailyDeath) {
         this.dailyDeath = dailyDeath;
+    }
+
+    public List<Map<String, String>> getDailyList() {
+        return dailyList;
+    }
+
+    public void setDailyList(List<Map<String, String>> dailyList) {
+        this.dailyList = dailyList;
     }
 }

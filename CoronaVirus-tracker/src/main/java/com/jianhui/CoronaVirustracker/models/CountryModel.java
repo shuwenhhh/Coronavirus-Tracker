@@ -9,6 +9,7 @@ public class CountryModel implements Comparable< CountryModel>{
     private Map<String,Integer> dailyConfirmed;
     private Map<String,Integer> dailyRecovered;
     private Map<String,Integer> dailyDeath;
+    private List<Map<String,String>> dailyList;
     private List<StatesModel> states;
     private int totalConfirmed;
     private int totalRecovered;
@@ -78,6 +79,14 @@ public class CountryModel implements Comparable< CountryModel>{
 
     public void setStates(List<StatesModel> states) {
         this.states = states;
+    }
+
+    public List<Map<String, String>> getDailyList() {
+        return dailyList;
+    }
+
+    public void setDailyList(List<Map<String, String>> dailyList) {
+        this.dailyList = dailyList;
     }
 
     @Override
