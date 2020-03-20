@@ -2,13 +2,16 @@ import React, { Component } from "react";
 
 import Post from "../../components/Post/Post";
 import axios from "axios";
-import "./Blog.css";
+import "./Posts.css";
+import { Link } from "react-router-dom";
 import Lines from "../../components/legend/Lines";
 
-class Blog extends Component {
+class Posts extends Component {
   state = {
     posts: [],
-    worlds: []
+    worlds: [],
+    selectedPostId: null,
+    error: false
   };
 
   componentDidMount() {
@@ -29,27 +32,30 @@ class Blog extends Component {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(response => {
-      console.log(response.data);
       this.setState({ worlds: response.data });
     });
   }
 
   postSelectedHandler = id => {
-    console.log(id);
+    this.setState({ selectedPostId: id });
   };
   render() {
-    const posts = this.state.posts.map(post => {
-      return (
-        <Post
-          key={post.countryName}
-          name={post.countryName}
-          totalConfirmed={post.totalConfirmed}
-          totalRecovered={post.totalRecovered}
-          totalDeath={post.totalDeath}
-          clicked={() => this.postSelectedHandler(post.countryName)}
-        />
-      );
-    });
+    let posts = <p style={{ textAlign: "center" }}>Something went wrong</p>;
+    if (!this.state.error) {
+      posts = this.state.posts.map(post => {
+        return (
+          <Link to={"country/" + post.countryName} key={post.countryName}>
+            <Post
+              name={post.countryName}
+              totalConfirmed={post.totalConfirmed}
+              totalRecovered={post.totalRecovered}
+              totalDeath={post.totalDeath}
+              clicked={() => this.postSelectedHandler(post.countryName)}
+            />
+          </Link>
+        );
+      });
+    }
     return (
       <div>
         <Lines
@@ -68,4 +74,4 @@ class Blog extends Component {
   }
 }
 
-export default Blog;
+export default Posts;

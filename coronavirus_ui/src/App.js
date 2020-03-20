@@ -1,13 +1,16 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Blog from "./containers/Blog/Blog";
+import Home from "./containers/Home/Home";
 
 function App() {
   return (
-    <React.Fragment>
-      <Blog />
-    </React.Fragment>
+    <BrowserRouter>
+      <React.Fragment>
+        <Home />
+      </React.Fragment>
+    </BrowserRouter>
   );
 }
 

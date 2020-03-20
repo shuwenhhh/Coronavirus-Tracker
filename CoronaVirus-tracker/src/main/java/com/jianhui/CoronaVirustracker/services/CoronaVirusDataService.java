@@ -77,16 +77,15 @@ public class CoronaVirusDataService {
             tempState.setLatitude(record.get("Lat"));
             tempState.setLongitude(record.get("Long"));
 
-            Map<String,Integer> map = new HashMap<>();
-            getStateDailyReport(map,record);
+            Map<String,Integer> map = new LinkedHashMap<>();
+            int total = getStateDailyReport(map,record);
             tempState.setDailyConfirmed(map);
-            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
-                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-2)));
-            else
-                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-1)));
-
+//            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
+//                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-2)));
+//            else
+//                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-1)));
+            tempState.setTotalConfirmed(total);
             newStates.add(tempState);
-
             totalConfirmed += tempState.getTotalConfirmed();
         }
         worldModel.setTotalConfirmed(totalConfirmed);
@@ -96,16 +95,13 @@ public class CoronaVirusDataService {
         int index = 0;
         int totalRecovered = 0;
         for (CSVRecord record : records){
-            Map<String,Integer> map = new HashMap<>();
-            getStateDailyReport(map,record);
+            Map<String,Integer> map = new LinkedHashMap<>();
+            int total = getStateDailyReport(map,record);
+            newStates.get(index).setTotalRecovered(total);
             newStates.get(index).setDailyRecovered(map);
-            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
-                newStates.get(index).setTotalRecovered(Integer.parseInt(record.get(record.size()-2)));
-            else
-                newStates.get(index).setTotalRecovered(Integer.parseInt(record.get(record.size()-1)));
             totalRecovered += newStates.get(index++).getTotalRecovered();
         }
-        worldModel.setTotalRecovered(totalRecovered);
+        worldModel.setTotalDeath(totalRecovered);
     }
 
     private void fetchDeathData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{
@@ -113,12 +109,13 @@ public class CoronaVirusDataService {
         int totalDeath = 0;
         for (CSVRecord record : records){
             Map<String,Integer> map = new LinkedHashMap<>();
-            getStateDailyReport(map,record);
+            int total = getStateDailyReport(map,record);
+            newStates.get(index).setTotalDeath(total);
             newStates.get(index).setDailyDeath(map);
-            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
-                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-2)));
-            else
-                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-1)));
+//            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
+//                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-2)));
+//            else
+//                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-1)));
 
             totalDeath += newStates.get(index++).getTotalDeath();
         }
@@ -152,10 +149,6 @@ public class CoronaVirusDataService {
             newCountry.setTotalRecovered(countryTotalRecovered);
             newCountry.setTotalDeath(countryTotalDeath);
             newCountry.setStates(list);
-            if (country.equalsIgnoreCase("us")){
-                for (StatesModel s: list)
-                    System.out.println(s.getState());
-            }
 
             Map<String,Integer> confirmedDaily = new LinkedHashMap<>();
             Map<String,Integer> recoveredDaily = new LinkedHashMap<>();
@@ -213,13 +206,16 @@ public class CoronaVirusDataService {
         }
     }
 
-    private void getStateDailyReport(Map<String,Integer> map, CSVRecord record) throws ParseException {
+    private int getStateDailyReport(Map<String,Integer> map, CSVRecord record) throws ParseException {
         String date = "1/22/20";
+        int max = 0;
         String today = dateFormat.format(new Date());
         while (!date.equals(today)){
-            map.put(date,Integer.parseInt(record.get(date)));
+            max = Math.max(Integer.parseInt(record.get(date)),max);
+            map.put(date,max);
             date = plusOneDay(date);
         }
+        return max;
     }
 
     private String plusOneDay(String dt) throws ParseException {

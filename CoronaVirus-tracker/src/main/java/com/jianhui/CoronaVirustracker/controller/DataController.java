@@ -36,7 +36,7 @@ public class DataController {
         return coronaVirusDataService.getWorld();
     }
 
-    @GetMapping("/state/{name}")
+    @GetMapping("country/state/{name}")
     public ResponseEntity<StatesModel> getStateInfoByName(@PathVariable("name") String stateName){
         StatesModel state = coronaVirusDataService.getStateInfoByName(stateName);
         return new ResponseEntity<>(state, state == null? HttpStatus.NOT_FOUND:HttpStatus.OK);
