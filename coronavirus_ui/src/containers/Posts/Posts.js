@@ -5,7 +5,7 @@ import axios from "axios";
 import "./Posts.css";
 import { Link } from "react-router-dom";
 import Lines from "../../components/legend/Lines";
-
+//world posts
 class Posts extends Component {
   state = {
     posts: [],
