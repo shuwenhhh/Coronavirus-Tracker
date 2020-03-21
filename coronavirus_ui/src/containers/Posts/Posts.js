@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 
 import Post from "../../components/Post/Post";
+import Title from "../../components/Title/Title";
 import axios from "axios";
 import "./Posts.css";
 import { Link } from "react-router-dom";
 import Lines from "../../components/legend/Lines";
+import WorldMap from "../map/WorldMap";
+
 //world posts
 class Posts extends Component {
   state = {
@@ -57,12 +60,13 @@ class Posts extends Component {
       });
     }
     return (
-      <div>
+      <div className="Posts">
+        <WorldMap />
         <Lines
           dailyList={this.state.worlds.dailyList}
           max={this.state.worlds.totalConfirmed}
         />
-        <Post
+        <Title
           name="World"
           totalConfirmed={this.state.worlds.totalConfirmed}
           totalRecovered={this.state.worlds.totalRecovered}

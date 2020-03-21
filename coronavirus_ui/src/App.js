@@ -7,9 +7,9 @@ import Home from "./containers/Home/Home";
 function App() {
   return (
     <BrowserRouter>
-      <React.Fragment>
+      <div>
         <Home />
-      </React.Fragment>
+      </div>
     </BrowserRouter>
   );
 }

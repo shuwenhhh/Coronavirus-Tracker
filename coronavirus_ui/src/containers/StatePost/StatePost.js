@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-import Post from "../../components/Post/Post";
 import Lines from "../../components/legend/Lines";
+import Title from "../../components/Title/Title";
 
 class StatePost extends Component {
   state = {
@@ -29,7 +29,7 @@ class StatePost extends Component {
           dailyList={this.state.posts.dailyList}
           max={this.state.posts.totalConfirmed}
         />
-        <Post
+        <Title
           name={this.props.match.params.id}
           totalConfirmed={this.state.posts.totalConfirmed}
           totalRecovered={this.state.posts.totalRecovered}

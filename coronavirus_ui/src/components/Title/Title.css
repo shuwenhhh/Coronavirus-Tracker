@@ -1,9 +1,11 @@
+.Title {
+  width: 100%;
+  padding: 16px;
+  margin: 10px;
+}
 .country__item {
-  width: 95%;
-  height: 95%;
-  max-height: 95%;
-  max-width: 95%;
-  padding: 10px;
+  width: 100%;
+  padding: 16px;
   margin: 10px;
   background-color: #dadada;
   border-radius: 15px;

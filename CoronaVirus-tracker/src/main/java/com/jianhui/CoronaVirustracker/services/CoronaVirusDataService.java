@@ -101,7 +101,7 @@ public class CoronaVirusDataService {
             newStates.get(index).setDailyRecovered(map);
             totalRecovered += newStates.get(index++).getTotalRecovered();
         }
-        worldModel.setTotalDeath(totalRecovered);
+        worldModel.setTotalRecovered(totalRecovered);
     }
 
     private void fetchDeathData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{

@@ -1,7 +1,7 @@
 import React from "react";
-import "./Post.css";
+import "./Title.css";
 
-const post = props => (
+const title = props => (
   <div class="country__item" onClick={props.clicked}>
     <h1 class="country__name">{props.name}</h1>
     <div class="country__item__data">
@@ -21,4 +21,4 @@ const post = props => (
   </div>
 );
 
-export default post;
+export default title;

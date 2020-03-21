@@ -3,6 +3,7 @@ import axios from "axios";
 
 import "./CountryPost.css";
 import Post from "../../components/Post/Post";
+import Title from "../../components/Title/Title";
 import Lines from "../../components/legend/Lines";
 import { Link } from "react-router-dom";
 
@@ -50,12 +51,12 @@ class CountryPost extends Component {
       });
     }
     return (
-      <div>
+      <div className="CountryPost">
         <Lines
           dailyList={this.state.posts.dailyList}
           max={this.state.posts.totalConfirmed}
         />
-        <Post
+        <Title
           name={this.props.match.params.id}
           totalConfirmed={this.state.posts.totalConfirmed}
           totalRecovered={this.state.posts.totalRecovered}
