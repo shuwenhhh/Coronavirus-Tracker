@@ -5,3 +5,11 @@
   width: 95%;
   margin: auto;
 }
+
+.CountryPost a {
+  text-decoration: none;
+}
+.CountryPost a:hover,
+.CountryPost a:active {
+  color: #ff9068;
+}

@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import Datamaps from "datamaps";
 import { connect } from "react-redux";
 import { ShowPost } from "../../actions/ShowPost";
+import "./style.css";
+
 const MAP_CLEARING_PROPS = ["height", "scope", "setProjection", "width"];
 
 const propChangeRequiresMapClear = (oldProps, newProps) => {
@@ -124,12 +126,11 @@ class WorldMap extends Component {
 
   render() {
     const style = {
-      height: "100%",
-      width: "100%",
+      height: window.innerHeight * 0.7,
+      width: window.innerWidth,
       display: "block",
       marginLeft: "auto",
       marginRight: "auto",
-      marginBottom: "1px",
       textAlign: "center",
       ...this.props.style
     };

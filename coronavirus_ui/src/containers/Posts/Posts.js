@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import { connect } from "react-redux";
+import ShowCountry from "../../actions/ShowCountry";
 import Post from "../../components/Post/Post";
 import Title from "../../components/Title/Title";
 import axios from "axios";
@@ -7,6 +9,7 @@ import "./Posts.css";
 import { Link } from "react-router-dom";
 import Lines from "../../components/legend/Lines";
 import WorldMap from "../map/WorldMap";
+import SearchBox from "../../components/SearchBox/SearchBox";
 
 //world posts
 class Posts extends Component {
@@ -14,13 +17,13 @@ class Posts extends Component {
     posts: [],
     worlds: [],
     selectedPostId: null,
-    error: false
+    searchPost: ""
   };
 
   componentDidMount() {
     axios({
       method: "GET",
-      url: "http://localhost:8080/allCountries",
+      url: "/allCountries",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
@@ -30,7 +33,7 @@ class Posts extends Component {
 
     axios({
       method: "GET",
-      url: "http://localhost:8080/world",
+      url: "/world",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
@@ -42,7 +45,15 @@ class Posts extends Component {
   postSelectedHandler = id => {
     this.setState({ selectedPostId: id });
   };
+
+  handleInput = e => {
+    this.setState({
+      searchPost: e.target.value
+    });
+  };
+
   render() {
+    // console.log(this.props.country);
     let posts = <p style={{ textAlign: "center" }}>Something went wrong</p>;
     if (!this.state.error) {
       posts = this.state.posts.map(post => {
@@ -72,10 +83,17 @@ class Posts extends Component {
           totalRecovered={this.state.worlds.totalRecovered}
           totalDeath={this.state.worlds.totalDeath}
         />
+        {/* <SearchBox handleInput={this.handleInput} /> */}
         {posts}
       </div>
     );
   }
 }
 
-export default Posts;
+const mapStateToProps = state => {
+  return {
+    country: state.country
+  };
+};
+
+export default connect(mapStateToProps, ShowCountry)(Posts);

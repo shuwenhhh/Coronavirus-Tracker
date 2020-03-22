@@ -7,9 +7,7 @@ import Home from "./containers/Home/Home";
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        <Home />
-      </div>
+      <Home />
     </BrowserRouter>
   );
 }

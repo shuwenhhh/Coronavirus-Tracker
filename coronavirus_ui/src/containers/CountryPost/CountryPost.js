@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 class CountryPost extends Component {
   state = {
-    posts: [],
+    country: [],
     providences: [],
     selectedPostId: null,
     error: false
@@ -18,13 +18,13 @@ class CountryPost extends Component {
   componentDidMount() {
     axios({
       method: "GET",
-      url: "http://localhost:8080/country/" + this.props.match.params.id,
+      url: "/country/" + this.props.match.params.id,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(response => {
       this.setState({ providences: response.data.states });
-      this.setState({ posts: response.data });
+      this.setState({ country: response.data });
     });
   }
   postSelectedHandler = id => {
@@ -53,14 +53,14 @@ class CountryPost extends Component {
     return (
       <div className="CountryPost">
         <Lines
-          dailyList={this.state.posts.dailyList}
-          max={this.state.posts.totalConfirmed}
+          dailyList={this.state.country.dailyList}
+          max={this.state.country.totalConfirmed}
         />
         <Title
           name={this.props.match.params.id}
-          totalConfirmed={this.state.posts.totalConfirmed}
-          totalRecovered={this.state.posts.totalRecovered}
-          totalDeath={this.state.posts.totalDeath}
+          totalConfirmed={this.state.country.totalConfirmed}
+          totalRecovered={this.state.country.totalRecovered}
+          totalDeath={this.state.country.totalDeath}
         />
         {providences}
       </div>

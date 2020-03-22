@@ -1,7 +1,10 @@
-import {combineReducers} from "redux";
+import { combineReducers } from "redux";
 import PostReducer from "./PostReducer";
+import CountryReducer from "./CountryReducer";
+
 const rootReducer = combineReducers({
-    posts: PostReducer
+  posts: PostReducer,
+  country: CountryReducer
 });
 
 export default rootReducer;
