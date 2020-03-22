@@ -53,7 +53,6 @@ class Posts extends Component {
   };
 
   render() {
-    // console.log(this.props.country);
     let posts = <p style={{ textAlign: "center" }}>Something went wrong</p>;
     if (!this.state.error) {
       posts = this.state.posts.map(post => {
@@ -90,10 +89,11 @@ class Posts extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    country: state.country
-  };
-};
+// const mapStateToProps = state => {
+//   return {
+//     country: state.country
+//   };
+// };
 
-export default connect(mapStateToProps, ShowCountry)(Posts);
+// export default connect(mapStateToProps, ShowCountry)(Posts);
+export default Posts;
