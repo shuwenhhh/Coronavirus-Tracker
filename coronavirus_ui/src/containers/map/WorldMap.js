@@ -88,12 +88,12 @@ class WorldMap extends Component {
         done: function(dataMap) {
           dataMap.svg
             .selectAll(".datamaps-subunit")
-            .on("click", function(geography) {
+            .on("hover", function(geography) {
               console.log(props);
               const response = this.props.ShowPost(geography.properties.name);
               if (response.success) {
                 alert(geography.properties.name);
-                this.props.history.push("/");
+                // this.props.history.push("/");
               }
             });
         }

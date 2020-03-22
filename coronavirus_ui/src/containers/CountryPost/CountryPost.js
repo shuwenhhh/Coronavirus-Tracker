@@ -2,17 +2,16 @@ import React, { Component } from "react";
 import axios from "axios";
 
 import "./CountryPost.css";
-import Post from "../../components/Post/Post";
 import Title from "../../components/Title/Title";
 import Lines from "../../components/legend/Lines";
-import { Link } from "react-router-dom";
+import SearchBox from "../../components/SearchBox/SearchBox";
+import StateList from "../CountryPost/StateList";
 
 class CountryPost extends Component {
   state = {
     country: [],
     providences: [],
-    selectedPostId: null,
-    error: false
+    query: ""
   };
 
   componentDidMount() {
@@ -30,26 +29,18 @@ class CountryPost extends Component {
   postSelectedHandler = id => {
     this.setState({ selectedPostId: id });
   };
+  handleInput = e => {
+    this.setState({
+      query: e.target.value
+    });
+  };
 
   render() {
-    let providences = (
-      <p style={{ textAlign: "center" }}>Something went wrong</p>
-    );
-    if (!this.state.error) {
-      providences = this.state.providences.map(providence => {
-        return (
-          <Link to={"state/" + providence.state} key={providence.state}>
-            <Post
-              name={providence.state}
-              totalConfirmed={providence.totalConfirmed}
-              totalRecovered={providence.totalRecovered}
-              totalDeath={providence.totalDeath}
-              clicked={() => this.postSelectedHandler(providence.state)}
-            />
-          </Link>
-        );
-      });
-    }
+    let filteredStates = this.state.providences.filter(providence => {
+      return providence.state
+        .toLowerCase()
+        .includes(this.state.query.toLowerCase());
+    });
     return (
       <div className="CountryPost">
         <Lines
@@ -62,7 +53,13 @@ class CountryPost extends Component {
           totalRecovered={this.state.country.totalRecovered}
           totalDeath={this.state.country.totalDeath}
         />
-        {providences}
+        {filteredStates.length >= 2 && (
+          <SearchBox
+            text="Search Providence/State Name Here"
+            handleInput={this.handleInput}
+          />
+        )}
+        <StateList providences={filteredStates} />
       </div>
     );
   }

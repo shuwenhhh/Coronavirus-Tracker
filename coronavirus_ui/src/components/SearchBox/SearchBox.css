@@ -1,0 +1,17 @@
+.search-box {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  margin-top: 1rem;
+}
+
+.search-text {
+  padding: 1rem 1.5rem;
+  background-color: #eee;
+  outline: none;
+  border: none;
+  width: 100%;
+  border-radius: 2rem;
+  font-size: 1.6em;
+  /* margin-left: 5rem; */
+}

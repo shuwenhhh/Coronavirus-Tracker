@@ -2,22 +2,20 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 import ShowCountry from "../../actions/ShowCountry";
-import Post from "../../components/Post/Post";
 import Title from "../../components/Title/Title";
 import axios from "axios";
-import "./Posts.css";
-import { Link } from "react-router-dom";
+import "./Main.css";
 import Lines from "../../components/legend/Lines";
 import WorldMap from "../map/WorldMap";
 import SearchBox from "../../components/SearchBox/SearchBox";
+import CountryList from "./CountryList";
 
 //world posts
-class Posts extends Component {
+class Main extends Component {
   state = {
-    posts: [],
+    countries: [],
     worlds: [],
-    selectedPostId: null,
-    searchPost: ""
+    query: ""
   };
 
   componentDidMount() {
@@ -28,7 +26,7 @@ class Posts extends Component {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(response => {
-      this.setState({ posts: response.data });
+      this.setState({ countries: response.data });
     });
 
     axios({
@@ -42,35 +40,20 @@ class Posts extends Component {
     });
   }
 
-  postSelectedHandler = id => {
-    this.setState({ selectedPostId: id });
-  };
-
   handleInput = e => {
     this.setState({
-      searchPost: e.target.value
+      query: e.target.value
     });
   };
 
   render() {
-    let posts = <p style={{ textAlign: "center" }}>Something went wrong</p>;
-    if (!this.state.error) {
-      posts = this.state.posts.map(post => {
-        return (
-          <Link to={"country/" + post.countryName} key={post.countryName}>
-            <Post
-              name={post.countryName}
-              totalConfirmed={post.totalConfirmed}
-              totalRecovered={post.totalRecovered}
-              totalDeath={post.totalDeath}
-              clicked={() => this.postSelectedHandler(post.countryName)}
-            />
-          </Link>
-        );
-      });
-    }
+    let filteredCountry = this.state.countries.filter(country => {
+      return country.countryName
+        .toLowerCase()
+        .includes(this.state.query.toLowerCase());
+    });
     return (
-      <div className="Posts">
+      <div className="Main">
         <WorldMap />
         <Lines
           dailyList={this.state.worlds.dailyList}
@@ -82,8 +65,11 @@ class Posts extends Component {
           totalRecovered={this.state.worlds.totalRecovered}
           totalDeath={this.state.worlds.totalDeath}
         />
-        {/* <SearchBox handleInput={this.handleInput} /> */}
-        {posts}
+        <SearchBox
+          text="Search Country Name Here"
+          handleInput={this.handleInput}
+        />
+        <CountryList countries={filteredCountry} />
       </div>
     );
   }
@@ -96,4 +82,4 @@ class Posts extends Component {
 // };
 
 // export default connect(mapStateToProps, ShowCountry)(Posts);
-export default Posts;
+export default Main;

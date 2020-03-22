@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Home.css";
-import Posts from "../Posts/Posts";
+import Main from "../Main/Main";
 import CountryPost from "../CountryPost/CountryPost";
 import { Route, Link } from "react-router-dom";
 import StatePost from "../StatePost/StatePost";
@@ -15,8 +15,7 @@ class Home extends Component {
             <GoHome color="lightgreen" size="3rem" />
           </Link>
         </header>
-        {/* <Route path="/" exact component={WorldMap} /> */}
-        <Route path="/" exact component={Posts} />
+        <Route path="/" exact component={Main} />
         <Route path="/country/:id" exact component={CountryPost} />
         <Route path="/country/state/:id" exact component={StatePost} />
       </div>

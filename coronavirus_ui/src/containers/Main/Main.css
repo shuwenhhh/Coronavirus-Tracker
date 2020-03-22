@@ -1,4 +1,4 @@
-.Posts {
+.Main {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -6,10 +6,10 @@
   margin: auto;
 }
 
-.Posts a {
+.Main a {
   text-decoration: none;
 }
-.Posts a:hover,
-.Posts a:active {
+.Main a:hover,
+.Main a:active {
   color: #ff9068;
 }
