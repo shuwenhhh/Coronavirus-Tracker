@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import axios from "axios";
-
 import "./CountryPost.css";
 import Title from "../../components/Title/Title";
 import Lines from "../../components/legend/Lines";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import StateList from "../CountryPost/StateList";
-import {ShowPost} from "../../actions/ShowPost";
-import {connect} from "react-redux";
+import { ShowPost } from "../../actions/ShowPost";
+import { connect } from "react-redux";
 class CountryPost extends Component {
   state = {
     country: [],
@@ -15,17 +13,14 @@ class CountryPost extends Component {
     query: ""
   };
 
-
   componentDidMount() {
-
-    this.props.ShowPost(this.props.match.params.id,(res)=>{
-      if(res.status===200){
-
+    this.props.ShowPost(this.props.match.params.id, res => {
+      if (res.status === 200) {
         this.setState({ providences: res.data.states });
         this.setState({ country: res.data });
-        console.log(this.state.country)
-      }else{
-        alert('error');
+        console.log(this.state.country);
+      } else {
+        alert("error");
       }
     });
   }
@@ -39,14 +34,11 @@ class CountryPost extends Component {
   };
 
   render() {
-    let filteredStates=[];
-    if (!this.state.providences===undefined) {
-       filteredStates = this.state.providences.filter(providence => {
-        return providence.state
-            .toLowerCase()
-            .includes(this.state.query.toLowerCase());
-      });
-    }
+    let filteredStates = this.state.providences.filter(providence => {
+      return providence.state
+        .toLowerCase()
+        .includes(this.state.query.toLowerCase());
+    });
     return (
       <div className="CountryPost">
         <Lines
@@ -71,4 +63,4 @@ class CountryPost extends Component {
   }
 }
 
-export default connect(null,{ShowPost})(CountryPost);
+export default connect(null, { ShowPost })(CountryPost);

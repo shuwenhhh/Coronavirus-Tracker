@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 import Lines from "../../components/legend/Lines";
 import Title from "../../components/Title/Title";
+import { ShowProvidence } from "../../actions/ShowProvidence";
+import { connect } from "react-redux";
 
 class StatePost extends Component {
   state = {
@@ -11,17 +12,14 @@ class StatePost extends Component {
   };
 
   componentDidMount() {
-    axios({
-      method: "GET",
-      url: "http://localhost:8080/country/state/" + this.props.match.params.id,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+    this.props.ShowProvidence(this.props.match.params.id, res => {
+      if (res.status === 200) {
+        this.setState({ posts: res.data });
+      } else {
+        alert("error");
       }
-    }).then(response => {
-      this.setState({ posts: response.data });
     });
   }
-
   render() {
     return (
       <div>
@@ -40,4 +38,4 @@ class StatePost extends Component {
   }
 }
 
-export default StatePost;
+export default connect(null, { ShowProvidence })(StatePost);

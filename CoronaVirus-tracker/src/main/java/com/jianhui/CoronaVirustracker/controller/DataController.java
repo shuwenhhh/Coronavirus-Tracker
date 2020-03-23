@@ -21,11 +21,6 @@ public class DataController {
     @Autowired
     CoronaVirusDataService coronaVirusDataService;
 
-    @GetMapping("/allStates")
-    public List<StatesModel> getAllStates(){
-        return coronaVirusDataService.getAllStates();
-    }
-
     @GetMapping("/allCountries")
     public List<CountryModel> getAllCountries(){
         return coronaVirusDataService.getAllCountries();

@@ -34,7 +34,7 @@ public class CoronaVirusDataService {
 
 
     @PostConstruct
-    @Scheduled(cron = "* 30 * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void fetchCoronaVirusData() throws IOException, InterruptedException, ParseException {
         List<StatesModel> newStates = new ArrayList<>();
         List<CountryModel> newCountries = new ArrayList<>();
@@ -80,10 +80,6 @@ public class CoronaVirusDataService {
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
             tempState.setDailyConfirmed(map);
-//            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
-//                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-2)));
-//            else
-//                tempState.setTotalConfirmed(Integer.parseInt(record.get(record.size()-1)));
             tempState.setTotalConfirmed(total);
             newStates.add(tempState);
             totalConfirmed += tempState.getTotalConfirmed();
@@ -112,11 +108,6 @@ public class CoronaVirusDataService {
             int total = getStateDailyReport(map,record);
             newStates.get(index).setTotalDeath(total);
             newStates.get(index).setDailyDeath(map);
-//            if (record.get(record.size()-1) == null || record.get(record.size()-1).length() == 0)
-//                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-2)));
-//            else
-//                newStates.get(index).setTotalDeath(Integer.parseInt(record.get(record.size()-1)));
-
             totalDeath += newStates.get(index++).getTotalDeath();
         }
         worldModel.setTotalDeath(totalDeath);
@@ -285,12 +276,6 @@ public class CoronaVirusDataService {
             }
             state.setDailyList(list);
         }
-    }
-
-    public List<StatesModel> getAllStates(){
-        Comparator<StatesModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
-        Collections.sort(allStates,compareByConfirmed);
-        return allStates;
     }
 
     public List<CountryModel> getAllCountries() {
