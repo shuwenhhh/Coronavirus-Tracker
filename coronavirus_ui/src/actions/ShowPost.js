@@ -2,8 +2,12 @@ import axios from "axios";
 export const SHOW_POST = "SHOW_POST";
 
 export function ShowPost(country, cb) {
-  const promise = axios.get("/country/", country).then(res => {
+  console.log(country);
+
+  const promise = axios.get(`/country/${country}`)
+   .then(res => {
     cb(res);
+    console.log(res);
     return res;
   });
   return {
