@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.plaf.nimbus.State;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,11 @@ public class DataController {
     @GetMapping("/allCountries")
     public List<CountryModel> getAllCountries(){
         return coronaVirusDataService.getAllCountries();
+    }
+
+    @GetMapping("/allStates")
+    public List<StatesModel> getAllStates(){
+        return coronaVirusDataService.getAllStates();
     }
 
     @GetMapping("/world")

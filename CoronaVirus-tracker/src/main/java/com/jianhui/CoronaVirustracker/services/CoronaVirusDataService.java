@@ -66,12 +66,14 @@ public class CoronaVirusDataService {
         int totalConfirmed=0;
         for (CSVRecord record : records){
             StatesModel tempState = new StatesModel();
-            String country = record.get("Country/Region");
             String state = record.get("Province/State");
-            if (state.length() != 0 && state.split(",").length <= 1)
-                 tempState.setState(state);
-            else
+            if (state.length() == 0)
                 tempState.setState("UNDEF");
+            else if (state.split(",").length <= 1)
+                    tempState.setState(state);
+            else
+                continue;
+            String country = record.get("Country/Region");
             tempState.setCountry(country);
             this.countrySet.add(country);
             tempState.setLatitude(record.get("Lat"));
@@ -91,6 +93,9 @@ public class CoronaVirusDataService {
         int index = 0;
         int totalRecovered = 0;
         for (CSVRecord record : records){
+            String state = record.get("Province/State");
+            if (state.length() != 0 && state.split(",").length > 1)
+                continue;
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
             newStates.get(index).setTotalRecovered(total);
@@ -104,6 +109,9 @@ public class CoronaVirusDataService {
         int index = 0;
         int totalDeath = 0;
         for (CSVRecord record : records){
+            String state = record.get("Province/State");
+            if (state.length() != 0 && state.split(",").length > 1)
+                continue;
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
             newStates.get(index).setTotalDeath(total);
@@ -282,6 +290,10 @@ public class CoronaVirusDataService {
         Comparator<CountryModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
         Collections.sort(allCountries,compareByConfirmed);
         return allCountries;
+    }
+
+    public List<StatesModel> getAllStates(){
+        return allStates;
     }
 
     public WorldModel getWorld() {

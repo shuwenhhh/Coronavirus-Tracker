@@ -4,7 +4,6 @@ export const SHOW_PROVIDENCE = "SHOW_PROVIDENCE";
 export function ShowProvidence(providence, cb) {
   const promise = axios.get(`/country/state/${providence}`).then(res => {
     cb(res);
-    console.log(res);
     return res;
   });
   return {

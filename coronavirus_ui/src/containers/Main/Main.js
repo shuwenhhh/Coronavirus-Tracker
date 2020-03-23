@@ -6,9 +6,9 @@ import ShowWorld from "../../actions/ShowWorld";
 import Title from "../../components/Title/Title";
 import "./Main.css";
 import Lines from "../../components/legend/Lines";
-import WorldMap from "../map/WorldMap";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import CountryList from "./CountryList";
+import WorldMap from "../WorldMap/WorldMap";
 
 //world posts
 class Main extends Component {
@@ -20,7 +20,6 @@ class Main extends Component {
 
   componentDidMount() {
     this.props.ShowCountry(res => {
-      console.log(res);
       if (res.status === 200) {
         this.setState({ countries: res.data });
       } else {
@@ -28,7 +27,6 @@ class Main extends Component {
       }
     });
     this.props.ShowWorld(res => {
-      console.log(res);
       if (res.status === 200) {
         this.setState({ worlds: res.data });
       } else {
