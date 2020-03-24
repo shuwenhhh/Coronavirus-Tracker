@@ -18,6 +18,9 @@ class StateList extends Component {
             totalConfirmed={providence.totalConfirmed}
             totalRecovered={providence.totalRecovered}
             totalDeath={providence.totalDeath}
+            confirmedRate={providence.confirmedRate}
+            recoveredRate={providence.recoveredRate}
+            deathRate={providence.deathRate}
             clicked={() => this.postSelectedHandler(providence.state)}
           />
         </Link>

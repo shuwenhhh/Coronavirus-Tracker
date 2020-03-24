@@ -9,21 +9,27 @@ const post = props => (
         <h1 className="country__text-1">Confirmed</h1>
         <h1 className="country__text-1">
           {props.totalConfirmed}
-          {/* <span className="rate1">+122</span> */}
+          {props.confirmedRate > 0 && (
+            <span className="rate">{" +" + props.confirmedRate}</span>
+          )}
         </h1>
       </div>
       <div className="country__item__data__item">
         <h1 className="country__text-1">Recovered</h1>
         <h1 className="country__text-1">
           {props.totalRecovered}
-          {/* <span className="rate2">+122</span> */}
+          {props.recoveredRate > 0 && (
+            <span className="rate">{" +" + props.recoveredRate}</span>
+          )}
         </h1>
       </div>
       <div className="country__item__data__item">
         <h1 className="country__text-1">Deaths</h1>
         <h1 className="country__text-1">
           {props.totalDeath}
-          {/* <span className="rate3">+122</span> */}
+          {props.deathRate > 0 && (
+            <span className="rate">{" +" + props.deathRate}</span>
+          )}
         </h1>
       </div>
     </div>

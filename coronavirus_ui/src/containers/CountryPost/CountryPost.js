@@ -50,6 +50,9 @@ class CountryPost extends Component {
           totalConfirmed={this.state.country.totalConfirmed}
           totalRecovered={this.state.country.totalRecovered}
           totalDeath={this.state.country.totalDeath}
+          confirmedRate={this.state.country.confirmedRate}
+          recoveredRate={this.state.country.recoveredRate}
+          deathRate={this.state.country.deathRate}
         />
         {filteredStates.length >= 2 && (
           <SearchBox

@@ -11,7 +11,6 @@ class WorldMap extends Component {
   };
   componentDidMount() {
     this.props.ShowAllStates(res => {
-      console.log(res);
       if (res.status === 200) {
         this.setState({ providences: res.data });
       } else {
@@ -21,7 +20,6 @@ class WorldMap extends Component {
   }
 
   render() {
-    console.log(this.state.providences);
     return (
       <Map
         style={{ height: "480px", width: "100%" }}
