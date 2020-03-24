@@ -12,6 +12,9 @@ public class StatesModel implements Comparable<StatesModel>{
     private int totalConfirmed;
     private int totalRecovered;
     private int totalDeath;
+    private int confirmedRate;
+    private int recoveredRate;
+    private int deathRate;
     private Map<String,Integer> dailyConfirmed;
     private Map<String,Integer> dailyRecovered;
     private Map<String,Integer> dailyDeath;
@@ -104,6 +107,30 @@ public class StatesModel implements Comparable<StatesModel>{
 
     public void setDailyList(List<Map<String, String>> dailyList) {
         this.dailyList = dailyList;
+    }
+
+    public int getConfirmedRate() {
+        return confirmedRate;
+    }
+
+    public void setConfirmedRate(int confirmedRate) {
+        this.confirmedRate = confirmedRate;
+    }
+
+    public int getRecoveredRate() {
+        return recoveredRate;
+    }
+
+    public void setRecoveredRate(int recoveredRate) {
+        this.recoveredRate = recoveredRate;
+    }
+
+    public int getDeathRate() {
+        return deathRate;
+    }
+
+    public void setDeathRate(int deathRate) {
+        this.deathRate = deathRate;
     }
 
     @Override

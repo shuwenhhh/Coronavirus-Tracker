@@ -33,7 +33,7 @@ public class DataController {
     }
 
     @GetMapping("/world")
-    public WorldModel getWorld() throws ParseException {
+    public WorldModel getWorld(){
         return coronaVirusDataService.getWorld();
     }
 

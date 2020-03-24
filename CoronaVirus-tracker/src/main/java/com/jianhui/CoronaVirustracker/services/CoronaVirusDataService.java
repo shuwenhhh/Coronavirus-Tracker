@@ -67,13 +67,15 @@ public class CoronaVirusDataService {
         for (CSVRecord record : records){
             StatesModel tempState = new StatesModel();
             String state = record.get("Province/State");
+            String country = record.get("Country/Region");
+            if (state.equalsIgnoreCase(country))
+                continue;
             if (state.length() == 0)
                 tempState.setState("UNDEF");
             else if (state.split(",").length <= 1)
                     tempState.setState(state);
             else
                 continue;
-            String country = record.get("Country/Region");
             tempState.setCountry(country);
             this.countrySet.add(country);
             tempState.setLatitude(record.get("Lat"));
@@ -81,6 +83,11 @@ public class CoronaVirusDataService {
 
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
+            int confirmedRate = 0;
+            String latest = record.get(record.size()-1);
+            if (latest.length() != 0)
+                confirmedRate = Integer.parseInt(latest) - Integer.parseInt(record.get(record.size()-2));
+            tempState.setConfirmedRate(confirmedRate);
             tempState.setDailyConfirmed(map);
             tempState.setTotalConfirmed(total);
             newStates.add(tempState);
@@ -94,10 +101,15 @@ public class CoronaVirusDataService {
         int totalRecovered = 0;
         for (CSVRecord record : records){
             String state = record.get("Province/State");
-            if (state.length() != 0 && state.split(",").length > 1)
+            if (state.length() != 0 && state.split(",").length > 1 || state.equalsIgnoreCase(record.get("Country/Region")))
                 continue;
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
+            int recoveredRate = 0;
+            String latest = record.get(record.size()-1);
+            if (latest.length() != 0)
+                recoveredRate = Integer.parseInt(latest) - Integer.parseInt(record.get(record.size()-2));
+            newStates.get(index).setRecoveredRate(recoveredRate);
             newStates.get(index).setTotalRecovered(total);
             newStates.get(index).setDailyRecovered(map);
             totalRecovered += newStates.get(index++).getTotalRecovered();
@@ -110,10 +122,15 @@ public class CoronaVirusDataService {
         int totalDeath = 0;
         for (CSVRecord record : records){
             String state = record.get("Province/State");
-            if (state.length() != 0 && state.split(",").length > 1)
+            if (state.length() != 0 && state.split(",").length > 1 || state.equalsIgnoreCase(record.get("Country/Region")))
                 continue;
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
+            int deathRate = 0;
+            String latest = record.get(record.size()-1);
+            if (latest.length() != 0)
+                deathRate = Integer.parseInt(latest) - Integer.parseInt(record.get(record.size()-2));
+            newStates.get(index).setDeathRate(deathRate);
             newStates.get(index).setTotalDeath(total);
             newStates.get(index).setDailyDeath(map);
             totalDeath += newStates.get(index++).getTotalDeath();
@@ -129,6 +146,9 @@ public class CoronaVirusDataService {
             int countryTotalConfirmed=0;
             int countryTotalRecovered=0;
             int countryTotalDeath=0;
+            int deathRate = 0;
+            int recoveredRate = 0;
+            int confirmedRate=0;
             List<Map<String,Integer>> confirmedDailyList = new LinkedList<>();
             List<Map<String,Integer>> recoveredDailyList = new LinkedList<>();
             List<Map<String,Integer>> deathDailyList = new LinkedList<>();
@@ -142,11 +162,17 @@ public class CoronaVirusDataService {
                     countryTotalConfirmed += state.getTotalConfirmed();
                     countryTotalRecovered += state.getTotalRecovered();
                     countryTotalDeath += state.getTotalDeath();
+                    deathRate += state.getDeathRate();
+                    recoveredRate += state.getRecoveredRate();
+                    confirmedRate += state.getConfirmedRate();
                 }
             }
             newCountry.setTotalConfirmed(countryTotalConfirmed);
             newCountry.setTotalRecovered(countryTotalRecovered);
             newCountry.setTotalDeath(countryTotalDeath);
+            newCountry.setRecoveredRate(recoveredRate);
+            newCountry.setDeathRate(deathRate);
+            newCountry.setConfirmedRate(confirmedRate);
             newCountry.setStates(list);
 
             Map<String,Integer> confirmedDaily = new LinkedHashMap<>();
@@ -192,6 +218,17 @@ public class CoronaVirusDataService {
 
             date = plusOneDay(date);
         }
+        int deathRate = 0;
+        int recoveredRate = 0;
+        int confirmedRate=0;
+        for (CountryModel country: allCountries){
+            deathRate += country.getDeathRate();
+            recoveredRate += country.getRecoveredRate();
+            confirmedRate += country.getConfirmedRate();
+        }
+        worldModel.setRecoveredRate(recoveredRate);
+        worldModel.setDeathRate(deathRate);
+        worldModel.setConfirmedRate(confirmedRate);
         worldModel.setDailyConfirmed(confirmedDaily);
         worldModel.setDailyDeath(deathDaily);
         worldModel.setDailyRecovered(recoveredDaily);
@@ -208,9 +245,12 @@ public class CoronaVirusDataService {
     private int getStateDailyReport(Map<String,Integer> map, CSVRecord record) throws ParseException {
         String date = "1/22/20";
         int max = 0;
-        String today = dateFormat.format(new Date());
-        while (!date.equals(today)){
-            max = Math.max(Integer.parseInt(record.get(date)),max);
+        int index = 4;
+        while (index < record.size()){
+            String num = record.get(index++);
+            if (num.length() == 0)
+                break;
+            max = Math.max(Integer.parseInt(num),max);
             map.put(date,max);
             date = plusOneDay(date);
         }

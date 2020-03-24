@@ -14,8 +14,9 @@ public class CountryModel implements Comparable< CountryModel>{
     private int totalConfirmed;
     private int totalRecovered;
     private int totalDeath;
-
-
+    private int confirmedRate;
+    private int recoveredRate;
+    private int deathRate;
 
     public String getCountryName() {
         return countryName;
@@ -87,6 +88,30 @@ public class CountryModel implements Comparable< CountryModel>{
 
     public void setDailyList(List<Map<String, String>> dailyList) {
         this.dailyList = dailyList;
+    }
+
+    public int getConfirmedRate() {
+        return confirmedRate;
+    }
+
+    public void setConfirmedRate(int confirmedRate) {
+        this.confirmedRate = confirmedRate;
+    }
+
+    public int getRecoveredRate() {
+        return recoveredRate;
+    }
+
+    public void setRecoveredRate(int recoveredRate) {
+        this.recoveredRate = recoveredRate;
+    }
+
+    public int getDeathRate() {
+        return deathRate;
+    }
+
+    public void setDeathRate(int deathRate) {
+        this.deathRate = deathRate;
     }
 
     @Override
