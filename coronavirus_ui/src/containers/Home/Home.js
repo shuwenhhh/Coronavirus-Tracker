@@ -12,7 +12,7 @@ class Home extends Component {
       <div>
         <header>
           <Link to="/">
-            <GoHome color="lightgreen" size="3rem" />
+            <GoHome className="Home" color="lightgreen" size="3rem" />
           </Link>
         </header>
         <Route path="/" exact component={Main} />
