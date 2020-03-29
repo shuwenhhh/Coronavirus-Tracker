@@ -1,10 +1,10 @@
-package com.jianhui.CoronaVirustracker;
+package com.jianhui.covid19;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CoronaVirusTrackerApplicationTests {
+class Covid19ApplicationTests {
 
 	@Test
 	void contextLoads() {

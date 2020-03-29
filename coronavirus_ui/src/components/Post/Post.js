@@ -15,21 +15,18 @@ const post = props => (
         </h1>
       </div>
       <div className="country__item__data__item">
-        <h1 className="country__text-1">Recovered</h1>
-        <h1 className="country__text-1">
-          {props.totalRecovered}
-          {props.recoveredRate > 0 && (
-            <span className="rate">{" +" + props.recoveredRate}</span>
-          )}
-        </h1>
-      </div>
-      <div className="country__item__data__item">
         <h1 className="country__text-1">Deaths</h1>
         <h1 className="country__text-1">
           {props.totalDeath}
           {props.deathRate > 0 && (
             <span className="rate">{" +" + props.deathRate}</span>
           )}
+        </h1>
+      </div>
+      <div className="country__item__data__item">
+        <h1 className="country__text-1">Fatal Rate</h1>
+        <h1 className="country__text-1">
+          {((props.totalDeath * 100) / props.totalConfirmed).toFixed(3) + "%"}
         </h1>
       </div>
     </div>

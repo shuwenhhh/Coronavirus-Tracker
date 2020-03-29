@@ -1,4 +1,4 @@
-package com.jianhui.CoronaVirustracker.configuration;
+package com.jianhui.covid19.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,4 +21,3 @@ public class CorsConfig {
         };
     }
 }
-

@@ -30,10 +30,8 @@ class StatePost extends Component {
         <Title
           name={this.props.match.params.id}
           totalConfirmed={this.state.posts.totalConfirmed}
-          totalRecovered={this.state.posts.totalRecovered}
           totalDeath={this.state.posts.totalDeath}
           confirmedRate={this.state.posts.confirmedRate}
-          recoveredRate={this.state.posts.recoveredRate}
           deathRate={this.state.posts.deathRate}
         />
       </div>

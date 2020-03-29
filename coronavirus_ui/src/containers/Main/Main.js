@@ -57,10 +57,8 @@ class Main extends Component {
         <Title
           name="World"
           totalConfirmed={this.state.worlds.totalConfirmed}
-          totalRecovered={this.state.worlds.totalRecovered}
           totalDeath={this.state.worlds.totalDeath}
           confirmedRate={this.state.worlds.confirmedRate}
-          recoveredRate={this.state.worlds.recoveredRate}
           deathRate={this.state.worlds.deathRate}
         />
         <SearchBox

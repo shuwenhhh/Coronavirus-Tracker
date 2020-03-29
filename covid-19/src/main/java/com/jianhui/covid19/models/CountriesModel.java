@@ -1,21 +1,18 @@
-package com.jianhui.CoronaVirustracker.models;
+package com.jianhui.covid19.models;
 
 import java.util.List;
 import java.util.Map;
 
-public class CountryModel implements Comparable< CountryModel>{
+public class CountriesModel implements Comparable<CountriesModel>{
 
     private String countryName;
     private Map<String,Integer> dailyConfirmed;
-    private Map<String,Integer> dailyRecovered;
     private Map<String,Integer> dailyDeath;
     private List<Map<String,String>> dailyList;
     private List<StatesModel> states;
     private int totalConfirmed;
-    private int totalRecovered;
     private int totalDeath;
     private int confirmedRate;
-    private int recoveredRate;
     private int deathRate;
 
     public String getCountryName() {
@@ -34,13 +31,6 @@ public class CountryModel implements Comparable< CountryModel>{
         this.dailyConfirmed = dailyConfirmed;
     }
 
-    public Map<String, Integer> getDailyRecovered() {
-        return dailyRecovered;
-    }
-
-    public void setDailyRecovered(Map<String, Integer> dailyRecovered) {
-        this.dailyRecovered = dailyRecovered;
-    }
 
     public Map<String, Integer> getDailyDeath() {
         return dailyDeath;
@@ -56,14 +46,6 @@ public class CountryModel implements Comparable< CountryModel>{
 
     public void setTotalConfirmed(int totalConfirmed) {
         this.totalConfirmed = totalConfirmed;
-    }
-
-    public int getTotalRecovered() {
-        return totalRecovered;
-    }
-
-    public void setTotalRecovered(int totalRecovered) {
-        this.totalRecovered = totalRecovered;
     }
 
     public int getTotalDeath() {
@@ -98,14 +80,6 @@ public class CountryModel implements Comparable< CountryModel>{
         this.confirmedRate = confirmedRate;
     }
 
-    public int getRecoveredRate() {
-        return recoveredRate;
-    }
-
-    public void setRecoveredRate(int recoveredRate) {
-        this.recoveredRate = recoveredRate;
-    }
-
     public int getDeathRate() {
         return deathRate;
     }
@@ -114,8 +88,9 @@ public class CountryModel implements Comparable< CountryModel>{
         this.deathRate = deathRate;
     }
 
+
     @Override
-    public int compareTo(CountryModel o) {
+    public int compareTo(CountriesModel o) {
         return this.getTotalConfirmed() - o.getTotalConfirmed();
     }
 }

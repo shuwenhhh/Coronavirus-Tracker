@@ -46,11 +46,13 @@ class WorldMap extends Component {
                 <br />
                 <span className="c">{"Confirmed: " + city.totalConfirmed}</span>
                 <br />
-                <span className="r">
-                  {"Reconvered: " + city.totalRecovered}
-                </span>
-                <br />
                 <span className="d">{"Deaths: " + city.totalDeath}</span>
+                <br />
+                <span className="r">
+                  {"Fatal Rate: " +
+                    ((city.totalDeath * 100) / city.totalConfirmed).toFixed(3) +
+                    "%"}
+                </span>
               </Tooltip>
             </CircleMarker>
           );

@@ -16,10 +16,8 @@ class CountryList extends Component {
           <Post
             name={country.countryName}
             totalConfirmed={country.totalConfirmed}
-            totalRecovered={country.totalRecovered}
             totalDeath={country.totalDeath}
             confirmedRate={country.confirmedRate}
-            recoveredRate={country.recoveredRate}
             deathRate={country.deathRate}
             clicked={() => this.postSelectedHandler(country.countryName)}
           />

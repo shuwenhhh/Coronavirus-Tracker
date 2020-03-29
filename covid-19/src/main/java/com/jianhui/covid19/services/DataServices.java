@@ -1,9 +1,8 @@
-package com.jianhui.CoronaVirustracker.services;
+package com.jianhui.covid19.services;
 
-
-import com.jianhui.CoronaVirustracker.models.CountryModel;
-import com.jianhui.CoronaVirustracker.models.StatesModel;
-import com.jianhui.CoronaVirustracker.models.WorldModel;
+import com.jianhui.covid19.models.CountriesModel;
+import com.jianhui.covid19.models.StatesModel;
+import com.jianhui.covid19.models.WorldModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,41 +15,37 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class CoronaVirusDataService {
-
-    private static final String CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/archived_data/archived_time_series/time_series_19-covid-Confirmed_archived_0325.csv";
-    private static final String RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/archived_data/archived_time_series/time_series_19-covid-Recovered_archived_0325.csv";
-    private static final String DEATH_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/archived_data/archived_time_series/time_series_19-covid-Deaths_archived_0325.csv";
+public class DataServices {
+    private static final String CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
+    private static final String DEATH_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
     private List<StatesModel> allStates = new ArrayList<>();
-    private List<CountryModel> allCountries = new ArrayList<>();
+    private List<CountriesModel> allCountries = new ArrayList<>();
     private Set<String> countrySet = new HashSet<>();
     private WorldModel worldModel = new WorldModel();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy");
 
-
     @PostConstruct
     @Scheduled(cron = "0 0 * * * *")
-    public void fetchCoronaVirusData() throws IOException, InterruptedException, ParseException {
+    public void fetchData() throws IOException, InterruptedException, ParseException {
         List<StatesModel> newStates = new ArrayList<>();
-        List<CountryModel> newCountries = new ArrayList<>();
+        List<CountriesModel> newCountries = new ArrayList<>();
         HttpClient client = HttpClient.newBuilder().build();
-        String[] urls = new String[]{CONFIRMED_URL, RECOVERED_URL, DEATH_URL};
-        for (int i=0; i<3; ++i){
+        String[] urls = new String[]{CONFIRMED_URL, DEATH_URL};
+        for (int i = 0; i < 2; ++i) {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(urls[i])).build();
-            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             StringReader csvBodyReader = new StringReader(response.body());
             Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
             if (i == 0)
-                fetchConfirmedData(records,newStates);
-            else if (i == 1)
-                fetchRecoveredData(records,newStates);
+                fetchConfirmedData(records, newStates);
             else
-                fetchDeathData(records,newStates);
+                fetchDeathData(records, newStates);
         }
         fetchCountryData(newStates, newCountries);
         allStates = newStates;
@@ -68,18 +63,18 @@ public class CoronaVirusDataService {
             StatesModel tempState = new StatesModel();
             String state = record.get("Province/State");
             String country = record.get("Country/Region");
-            if (state.equalsIgnoreCase(country))
+            String lat = record.get("Lat");
+            String lon = record.get("Long");
+            if (lat.equalsIgnoreCase(lon))
                 continue;
             if (state.length() == 0)
                 tempState.setState("UNDEF");
-            else if (state.split(",").length <= 1)
-                    tempState.setState(state);
             else
-                continue;
+                tempState.setState(state);
             tempState.setCountry(country);
             this.countrySet.add(country);
-            tempState.setLatitude(record.get("Lat"));
-            tempState.setLongitude(record.get("Long"));
+            tempState.setLatitude(lat);
+            tempState.setLongitude(lon);
 
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
@@ -96,33 +91,13 @@ public class CoronaVirusDataService {
         worldModel.setTotalConfirmed(totalConfirmed);
     }
 
-    private void fetchRecoveredData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{
-        int index = 0;
-        int totalRecovered = 0;
-        for (CSVRecord record : records){
-            String state = record.get("Province/State");
-            if (state.length() != 0 && state.split(",").length > 1 || state.equalsIgnoreCase(record.get("Country/Region")))
-                continue;
-            Map<String,Integer> map = new LinkedHashMap<>();
-            int total = getStateDailyReport(map,record);
-            int recoveredRate = 0;
-            String latest = record.get(record.size()-1);
-            if (latest.length() != 0)
-                recoveredRate = Integer.parseInt(latest) - Integer.parseInt(record.get(record.size()-2));
-            newStates.get(index).setRecoveredRate(recoveredRate);
-            newStates.get(index).setTotalRecovered(total);
-            newStates.get(index).setDailyRecovered(map);
-            totalRecovered += newStates.get(index++).getTotalRecovered();
-        }
-        worldModel.setTotalRecovered(totalRecovered);
-    }
-
     private void fetchDeathData(Iterable<CSVRecord> records, List<StatesModel> newStates) throws ParseException{
         int index = 0;
         int totalDeath = 0;
         for (CSVRecord record : records){
-            String state = record.get("Province/State");
-            if (state.length() != 0 && state.split(",").length > 1 || state.equalsIgnoreCase(record.get("Country/Region")))
+            String lat = record.get("Lat");
+            String lon = record.get("Long");
+            if (lat.equalsIgnoreCase(lon))
                 continue;
             Map<String,Integer> map = new LinkedHashMap<>();
             int total = getStateDailyReport(map,record);
@@ -138,108 +113,135 @@ public class CoronaVirusDataService {
         worldModel.setTotalDeath(totalDeath);
     }
 
-    private void fetchCountryData(List<StatesModel> newStates, List<CountryModel> newCountries){
+    private void fetchCountryData(List<StatesModel> newStates, List<CountriesModel> newCountries){
         for(String country: this.countrySet){
             List<StatesModel> list = new LinkedList<>();
-            CountryModel newCountry = new CountryModel();
+            CountriesModel newCountry = new CountriesModel();
             newCountry.setCountryName(country);
             int countryTotalConfirmed=0;
-            int countryTotalRecovered=0;
             int countryTotalDeath=0;
             int deathRate = 0;
-            int recoveredRate = 0;
             int confirmedRate=0;
             List<Map<String,Integer>> confirmedDailyList = new LinkedList<>();
-            List<Map<String,Integer>> recoveredDailyList = new LinkedList<>();
             List<Map<String,Integer>> deathDailyList = new LinkedList<>();
             for (StatesModel state: newStates){
                 if (state.getCountry().equalsIgnoreCase(country)){
                     if (!state.getState().equalsIgnoreCase("UNDEF"))
                         list.add(state);
                     confirmedDailyList.add(state.getDailyConfirmed());
-                    recoveredDailyList.add(state.getDailyRecovered());
                     deathDailyList.add(state.getDailyDeath());
                     countryTotalConfirmed += state.getTotalConfirmed();
-                    countryTotalRecovered += state.getTotalRecovered();
                     countryTotalDeath += state.getTotalDeath();
                     deathRate += state.getDeathRate();
-                    recoveredRate += state.getRecoveredRate();
                     confirmedRate += state.getConfirmedRate();
                 }
             }
             newCountry.setTotalConfirmed(countryTotalConfirmed);
-            newCountry.setTotalRecovered(countryTotalRecovered);
             newCountry.setTotalDeath(countryTotalDeath);
-            newCountry.setRecoveredRate(recoveredRate);
             newCountry.setDeathRate(deathRate);
             newCountry.setConfirmedRate(confirmedRate);
             newCountry.setStates(list);
 
             Map<String,Integer> confirmedDaily = new LinkedHashMap<>();
-            Map<String,Integer> recoveredDaily = new LinkedHashMap<>();
             Map<String,Integer> deathDaily = new LinkedHashMap<>();
 
             getCountryDailyReport(confirmedDaily,confirmedDailyList);
-            getCountryDailyReport(recoveredDaily,recoveredDailyList);
             getCountryDailyReport(deathDaily,deathDailyList);
 
             newCountry.setDailyConfirmed(confirmedDaily);
-            newCountry.setDailyRecovered(recoveredDaily);
             newCountry.setDailyDeath(deathDaily);
 
             newCountries.add(newCountry);
         }
     }
-
     private void getWorldDailyReport() throws ParseException {
         String date = "1/22/20";
         String today = dateFormat.format(new Date());
         Map<String,Integer> confirmedDaily = new LinkedHashMap<>();
-        Map<String, Integer> recoveredDaily = new LinkedHashMap<>();
         Map<String, Integer> deathDaily = new LinkedHashMap<>();
         boolean isEnd = false;
         while (!date.equals(today)) {
-            int confirmed=0, recovered=0,death=0;
-            for (CountryModel country : allCountries) {
+            int confirmed=0,death=0;
+            for (CountriesModel country : allCountries) {
                 if (!country.getDailyConfirmed().containsKey(date)){
                     isEnd = true;
                     break;
                 }
                 confirmed += country.getDailyConfirmed().get(date);
-                recovered += country.getDailyRecovered().get(date);
                 death += country.getDailyDeath().get(date);
 
             }
             if (isEnd)
                 break;
             confirmedDaily.put(date, confirmed);
-            recoveredDaily.put(date, recovered);
             deathDaily.put(date, death);
-
             date = plusOneDay(date);
         }
         int deathRate = 0;
-        int recoveredRate = 0;
         int confirmedRate=0;
-        for (CountryModel country: allCountries){
+        for (CountriesModel country: allCountries){
             deathRate += country.getDeathRate();
-            recoveredRate += country.getRecoveredRate();
             confirmedRate += country.getConfirmedRate();
         }
-        worldModel.setRecoveredRate(recoveredRate);
         worldModel.setDeathRate(deathRate);
         worldModel.setConfirmedRate(confirmedRate);
         worldModel.setDailyConfirmed(confirmedDaily);
         worldModel.setDailyDeath(deathDaily);
-        worldModel.setDailyRecovered(recoveredDaily);
     }
 
-    private void getCountryDailyReport (Map<String,Integer> map, List<Map<String,Integer>> mapList){
-        for (Map<String,Integer> daily: mapList) {
-            for (String date : daily.keySet()) {
-                map.put(date, map.getOrDefault(date, 0) + daily.get(date));
+    public void getStateDailyList() throws ParseException{
+        for (StatesModel state: allStates){
+            Map<String,Integer> dailyConfirmed = state.getDailyConfirmed();
+            Map<String,Integer> dailyDeath = state.getDailyDeath();
+            List<Map<String,String>> list = new LinkedList<>();
+            String date = "1/22/20";
+            String today = dateFormat.format(new Date());
+            while (!date.equals(today)){
+                Map<String,String> map = new LinkedHashMap<>();
+                map.put("date",date);
+                map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
+                map.put("death", String.valueOf(dailyDeath.get(date)));
+                list.add(map);
+                date = plusOneDay(date);
             }
+            state.setDailyList(list);
         }
+    }
+
+    public void getCountryDailyList() throws ParseException{
+        for (CountriesModel country: allCountries){
+            Map<String,Integer> dailyConfirmed = country.getDailyConfirmed();
+            Map<String,Integer> dailyDeath = country.getDailyDeath();
+            List<Map<String,String>> list = new LinkedList<>();
+            String date = "1/22/20";
+            String today = dateFormat.format(new Date());
+            while (!date.equals(today)){
+                Map<String,String> map = new LinkedHashMap<>();
+                map.put("date",date);
+                map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
+                map.put("death", String.valueOf(dailyDeath.get(date)));
+                list.add(map);
+                date = plusOneDay(date);
+            }
+            country.setDailyList(list);
+        }
+    }
+
+    public void getWorldDailyList() throws ParseException {
+        Map<String,Integer> dailyConfirmed = worldModel.getDailyConfirmed();
+        Map<String,Integer> dailyDeath = worldModel.getDailyDeath();
+        List<Map<String,String>> list = new LinkedList<>();
+        String date = "1/22/20";
+        String today = dateFormat.format(new Date());
+        while (!date.equals(today)){
+            Map<String,String> map = new LinkedHashMap<>();
+            map.put("date",date);
+            map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
+            map.put("death", String.valueOf(dailyDeath.get(date)));
+            list.add(map);
+            date = plusOneDay(date);
+        }
+        worldModel.setDailyList(list);
     }
 
     private int getStateDailyReport(Map<String,Integer> map, CSVRecord record) throws ParseException {
@@ -256,6 +258,13 @@ public class CoronaVirusDataService {
         }
         return max;
     }
+    private void getCountryDailyReport (Map<String,Integer> map, List<Map<String,Integer>> mapList){
+        for (Map<String,Integer> daily: mapList) {
+            for (String date : daily.keySet()) {
+                map.put(date, map.getOrDefault(date, 0) + daily.get(date));
+            }
+        }
+    }
 
     private String plusOneDay(String dt) throws ParseException {
         Date date = dateFormat.parse(dt);
@@ -265,69 +274,8 @@ public class CoronaVirusDataService {
         return dateFormat.format(c.getTime());
     }
 
-    public void getWorldDailyList() throws ParseException {
-        Map<String,Integer> dailyConfirmed = worldModel.getDailyConfirmed();
-        Map<String,Integer> dailyRecovered = worldModel.getDailyRecovered();
-        Map<String,Integer> dailyDeath = worldModel.getDailyDeath();
-        List<Map<String,String>> list = new LinkedList<>();
-        String date = "1/22/20";
-        String today = dateFormat.format(new Date());
-        while (!date.equals(today)){
-            Map<String,String> map = new LinkedHashMap<>();
-            map.put("date",date);
-            map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
-            map.put("recovered", String.valueOf(dailyRecovered.get(date)));
-            map.put("death", String.valueOf(dailyDeath.get(date)));
-            list.add(map);
-            date = plusOneDay(date);
-        }
-        worldModel.setDailyList(list);
-    }
-
-    public void getCountryDailyList() throws ParseException{
-        for (CountryModel country: allCountries){
-            Map<String,Integer> dailyConfirmed = country.getDailyConfirmed();
-            Map<String,Integer> dailyRecovered = country.getDailyRecovered();
-            Map<String,Integer> dailyDeath = country.getDailyDeath();
-            List<Map<String,String>> list = new LinkedList<>();
-            String date = "1/22/20";
-            String today = dateFormat.format(new Date());
-            while (!date.equals(today)){
-                Map<String,String> map = new LinkedHashMap<>();
-                map.put("date",date);
-                map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
-                map.put("recovered", String.valueOf(dailyRecovered.get(date)));
-                map.put("death", String.valueOf(dailyDeath.get(date)));
-                list.add(map);
-                date = plusOneDay(date);
-            }
-            country.setDailyList(list);
-        }
-    }
-
-    public void getStateDailyList() throws ParseException{
-        for (StatesModel state: allStates){
-            Map<String,Integer> dailyConfirmed = state.getDailyConfirmed();
-            Map<String,Integer> dailyRecovered = state.getDailyRecovered();
-            Map<String,Integer> dailyDeath = state.getDailyDeath();
-            List<Map<String,String>> list = new LinkedList<>();
-            String date = "1/22/20";
-            String today = dateFormat.format(new Date());
-            while (!date.equals(today)){
-                Map<String,String> map = new LinkedHashMap<>();
-                map.put("date",date);
-                map.put("confirmed", String.valueOf(dailyConfirmed.get(date)));
-                map.put("recovered", String.valueOf(dailyRecovered.get(date)));
-                map.put("death", String.valueOf(dailyDeath.get(date)));
-                list.add(map);
-                date = plusOneDay(date);
-            }
-            state.setDailyList(list);
-        }
-    }
-
-    public List<CountryModel> getAllCountries() {
-        Comparator<CountryModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
+    public List<CountriesModel> getAllCountries() {
+        Comparator<CountriesModel> compareByConfirmed = (o1, o2) -> o2.getTotalConfirmed()-o1.getTotalConfirmed();
         Collections.sort(allCountries,compareByConfirmed);
         return allCountries;
     }
@@ -348,8 +296,8 @@ public class CoronaVirusDataService {
         return null;
     }
 
-    public CountryModel getCountryInfoByName(String name){
-        for (CountryModel country: allCountries){
+    public CountriesModel getCountryInfoByName(String name){
+        for (CountriesModel country: allCountries){
             if (country.getCountryName().equalsIgnoreCase(name))
                 return country;
         }
@@ -357,7 +305,7 @@ public class CoronaVirusDataService {
     }
 
     public List<StatesModel> getStateListByCountry(String name){
-        for (CountryModel country: allCountries){
+        for (CountriesModel country: allCountries){
             if (country.getCountryName().equalsIgnoreCase(name)) {
                 return country.getStates();
             }

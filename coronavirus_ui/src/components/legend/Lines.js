@@ -28,12 +28,6 @@ const Lines = props => {
           dataKey="confirmed"
           stroke="#8884d8"
         />
-        <Line
-          name="Recovered"
-          type="monotone"
-          dataKey="recovered"
-          stroke="#82ca9d"
-        />
         <Line name="Death" type="monotone" dataKey="death" stroke="red" />
       </LineChart>
     </ResponsiveContainer>
