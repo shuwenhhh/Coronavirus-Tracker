@@ -158,7 +158,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/spring-boot-serverless/dev/1585528510304-2020-03-30T00:35:10.304Z/covid-19-0.0.1-SNAPSHOT.jar"
+                "S3Key": "serverless/spring-boot-serverless/dev/1585589200096-2020-03-30T17:26:40.096Z/covid-19-0.0.1-SNAPSHOT.jar"
               },
               "FunctionName": "spring-boot-serverless-dev-springBootServerless",
               "Handler": "com.jianhui.covid19.StreamLambdaHandler::handleRequest",
@@ -257,7 +257,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1585528509436": {
+          "ApiGatewayDeployment1585589199203": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -440,7 +440,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/spring-boot-serverless/dev/1585528510304-2020-03-30T00:35:10.304Z",
+    "artifactDirectoryName": "serverless/spring-boot-serverless/dev/1585589200096-2020-03-30T17:26:40.096Z",
     "artifact": "covid-19-0.0.1-SNAPSHOT.jar"
   }
 }
