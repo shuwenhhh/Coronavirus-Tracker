@@ -1,0 +1,17 @@
+service: spring-boot-serverless
+
+provider:
+  name: aws
+  runtime: java11
+
+package:
+  artifact: target/covid-19-0.0.1-SNAPSHOT.jar
+
+functions:
+  springBootServerless:
+    handler: com.jianhui.covid19.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: /{proxy+}
+          method: get
+    timeout: 30

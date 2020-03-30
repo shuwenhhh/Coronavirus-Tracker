@@ -24,6 +24,9 @@ class WorldMap extends Component {
       <Map
         style={{ height: "480px", width: "100%" }}
         zoom={2}
+        maxZoom={5}
+        minZoom={2}
+        dragging={true}
         center={[-0.09, 51.505]}
       >
         <TileLayer url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -49,7 +52,7 @@ class WorldMap extends Component {
                 <span className="d">{"Deaths: " + city.totalDeath}</span>
                 <br />
                 <span className="r">
-                  {"Fatal Rate: " +
+                  {"Fatality Rate: " +
                     ((city.totalDeath * 100) / city.totalConfirmed).toFixed(3) +
                     "%"}
                 </span>

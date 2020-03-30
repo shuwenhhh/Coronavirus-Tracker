@@ -48,25 +48,34 @@ class Main extends Component {
         .includes(this.state.query.toLowerCase());
     });
     return (
-      <div className="Main">
-        <WorldMap />
-        <Lines
-          dailyList={this.state.worlds.dailyList}
-          max={this.state.worlds.totalConfirmed}
-        />
-        <Title
-          name="World"
-          totalConfirmed={this.state.worlds.totalConfirmed}
-          totalDeath={this.state.worlds.totalDeath}
-          confirmedRate={this.state.worlds.confirmedRate}
-          deathRate={this.state.worlds.deathRate}
-        />
-        <SearchBox
-          text="Search Country Name Here"
-          handleInput={this.handleInput}
-        />
-        <CountryList countries={filteredCountry} />
-      </div>
+      <React.Fragment>
+        <div className="Main">
+          <WorldMap />
+          <Lines
+            dailyList={this.state.worlds.dailyList}
+            max={this.state.worlds.totalConfirmed}
+          />
+
+          <Title
+            name="World"
+            totalConfirmed={this.state.worlds.totalConfirmed}
+            totalDeath={this.state.worlds.totalDeath}
+            confirmedRate={this.state.worlds.confirmedRate}
+            deathRate={this.state.worlds.deathRate}
+          />
+          <SearchBox
+            text="Search Country Name Here"
+            handleInput={this.handleInput}
+          />
+          <CountryList countries={filteredCountry} />
+        </div>
+        <p className="footer">
+          All Data are from
+          <a href="https://github.com/CSSEGISandData"> Johns Hopkins </a>
+          Built by <a href="https://jhuilin.herokuapp.com/"> JianHui Lin </a>and
+          <a href="https://github.com/shuwenhhh"> ShuWeng Wang</a>
+        </p>
+      </React.Fragment>
     );
   }
 }
