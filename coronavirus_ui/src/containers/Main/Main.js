@@ -73,7 +73,7 @@ class Main extends Component {
           All Data are from
           <a href="https://github.com/CSSEGISandData"> Johns Hopkins </a>
           Built by <a href="https://jhuilin.herokuapp.com/"> JianHui Lin </a>and
-          <a href="https://github.com/shuwenhhh"> ShuWeng Wang</a>
+          <a href="https://github.com/shuwenhhh"> ShuWen Wang</a>
         </p>
       </React.Fragment>
     );

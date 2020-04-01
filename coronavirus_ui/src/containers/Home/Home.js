@@ -14,6 +14,10 @@ class Home extends Component {
           <Link to="/">
             <GoHome className="Home" color="lightgreen" size="3rem" />
           </Link>
+
+            <a href="https://www.buymeacoffee.com/esfe">
+            <button type="button" className="btn btn-outline-warning" style={{position: 'absolute',top:'10px', right: '12px'}}>Buy us a coffee</button>
+            </a>
         </header>
         <Route path="/" exact component={Main} />
         <Route path="/country/:id" exact component={CountryPost} />
